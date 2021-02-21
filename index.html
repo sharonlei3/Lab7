@@ -79,12 +79,29 @@
 
     <!-- Main Script -->
     <script type="module">
+
+      var endpoint = document.getElementById("endpoint").value;
       // This function should fetch all of the data from the given endpoint.
       // From the 4 CRUD actions, this is the READ action, and uses the GET http method.
       // The main difference from fetchOne() will be the URL you request from; check
       // the writeup to view the URL pattern for fetch one and fetch all
       function fetchAll() {
-        // TODO
+        document.getElementById("recordIDcontainer").style.display = "none";
+        document.getElementById("recordForm").style.display = "none";
+
+        fetch(endpoint, {
+          method: 'GET',
+        })
+        .then(function(response) {
+          return response.text();
+        })
+        .then(function(text) {
+          console.log('Request successful', text);
+          document.getElementById("output").textContent=text;
+        })
+        .catch(function(error) {
+          log('Request failed', error)
+        });
       }
 
       // This function should fetch one entry from the given endpoint.
@@ -92,23 +109,121 @@
       // The main difference from fetchAll() will be the URL you request from; check
       // the writeup to view the URL pattern for fetch one and fetch all
       function fetchOne() {
-        // TODO
+        document.getElementById("recordIDcontainer").style.display = "none";
+        document.getElementById("recordForm").style.display = "none";
+
+        let sign = prompt("Enter a record id");
+        let t = true;
+        
+        fetch(endpoint+"/"+sign, {
+          method: 'GET',
+        })
+        .then(function(response) {
+          if(!response.ok){
+            document.getElementById("output").textContent="Network Error: " + response.status;
+            t=false;
+          }
+          else{
+            return response.text();
+          }
+        })
+        .then(function(text) {
+          if(t==true){
+            console.log('Request successful', text);
+            document.getElementById("output").textContent=text;
+          }
+        })
+        .catch(function(error) {
+          document.getElementById("output").textContent=error;
+        });
       }
 
       // This function should use fetch to create one entry in the given endpoint.
       // From the 4 CRUD actions, this is the CREATE action, and uses the POST http method.
       // The main difference from updateRecord() will be the URL you send data to; check
       // the writeup to view the URL pattern for create and update
-      function createRecord() {
-        // TODO
+      function createRecord(a) {
+        let t = true;
+        document.getElementById("recordIDcontainer").style.display = "none";
+
+
+        if(a=="show"){
+          document.getElementById("recordForm").style.display = "inline";
+        }
+        else{
+          let auth = document.getElementById("author").value;
+          let titl = document.getElementById("title").value;
+
+          fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+          },
+          body: 'author=' + auth + '&title=' + titl
+        })
+        .then(function(response) {
+          if(!response.ok){
+            document.getElementById("output").textContent="Network Error: " + response.status;
+            t=false;
+          }
+          else{
+            return response.text();
+          }
+        })
+        .then(function(text) {
+          if(t==true){
+            console.log('Request successful', text);
+            document.getElementById("output").textContent=text;
+          }
+        })
+        .catch(function (error) {
+          console.log('Request failed', error);
+        });
+        }
       }
 
       // This function should use fetch to update one existing entry in the given endpoint.
       // From the 4 CRUD actions, this is the UPDATE action, and uses the PUT http method.
       // The main difference from createRecord() will be the URL you send data to; check
       // the writeup to view the URL pattern for create and update
-      function updateRecord() {
-        // TODO
+      function updateRecord(a) {
+        let t = true;
+
+        if(a=="show"){
+          document.getElementById("recordForm").style.display = "inline";
+          document.getElementById("recordIDcontainer").style.display = "inline";
+        }
+        else{
+          let auth = document.getElementById("author").value;
+          let titl = document.getElementById("title").value;
+          let id = document.getElementById("recordID").value;
+
+          fetch(endpoint+"/"+id, {
+          method: 'PUT',
+          headers: {
+            "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+          },
+          body: 'author=' + auth + '&title=' + titl
+        })
+        .then(function(response) {
+          if(!response.ok){
+            document.getElementById("output").textContent="Network Error: " + response.status;
+            t=false;
+          }
+          else{
+            return response.text();
+          }
+        })
+        .then(function(text) {
+          if(t==true){
+            console.log('Request successful', text);
+            document.getElementById("output").textContent=text;
+          }
+        })
+        .catch(function (error) {
+          console.log('Request failed', error);
+        });
+        }
       }
 
       // This function should use fetch to delete one existing entry in the given endpoint.
@@ -117,7 +232,33 @@
       // request; check the writeup to view the URL pattern for get one and delete. THERE IS NO 
       // delete all, only delete one.
       function deleteRecord() {
-        // TODO
+        document.getElementById("recordIDcontainer").style.display = "none";
+        document.getElementById("recordForm").style.display = "none";
+
+        let sign = prompt("Enter a record id");
+        let t = true;
+        
+        fetch(endpoint+"/"+sign, {
+          method: 'DELETE',
+        })
+        .then(function(response) {
+          if(!response.ok){
+            document.getElementById("output").textContent="Network Error: " + response.status;
+            t=false;
+          }
+          else{
+            return response.text();
+          }
+        })
+        .then(function(text) {
+          if(t==true){
+            console.log('Request successful', text);
+            document.getElementById("output").textContent=text;
+          }
+        })
+        .catch(function(error) {
+          document.getElementById("output").textContent=error;
+        });
       }
 
       window.addEventListener('DOMContentLoaded', () => {
